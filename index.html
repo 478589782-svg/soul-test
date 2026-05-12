@@ -294,12 +294,14 @@ function showResult(){
     '<div class="match-item"><div class="match-type">'+types[t.bestMatch].emoji+' '+t.bestName+' <span class="match-tag">最佳搭子</span></div><div class="match-reason">'+t.matchWhy+'</div></div>'+
     t.goodMatch.map(function(k,i){return'<div class="match-item"><div class="match-type">'+types[k].emoji+' '+t.goodNames[i]+' <span class="match-tag">也很搭</span></div></div>'}).join('')+
     '</div>'+
-    '<div class="share-tip">💡 把这个链接发给朋友，看看你们是不是灵魂搭子～</div>'+
+    '<div class="share-tip" style="text-align:center"><div style="margin-bottom:12px">📱 扫码让朋友也来测</div><canvas id="qrCanvas" style="background:#fff;padding:8px;border-radius:8px;max-width:160px"></canvas><div style="margin-top:10px;font-size:.8em">扫码或长按识别 · 看看你们是不是灵魂搭子</div></div>'+
     '<p style="color:#666;font-size:.8em;margin-top:20px">© 2026 涅小炎 | 灵魂荒诞指数测试</p>'+
     '<button class="btn" id="retryBtn">再测一次</button>';
   $('result-screen').innerHTML=html;
   $('retryBtn').addEventListener('click',function(){location.reload()});
   $('retryBtn').addEventListener('touchend',function(e){e.preventDefault();location.reload()});
+  // Render QR code
+  try{var qrC=$('qrCanvas');if(qrC&&window._makeQR){window._makeQR(window.location.href.split('?')[0],qrC,3)}}catch(e){}
 }
 function dimHTML(label,pct,c1,c2){
   return'<div class="dim-item"><div class="dim-label"><span>'+label+'</span><span>'+pct+'%</span></div><div class="dim-bar"><div class="dim-fill" style="width:'+pct+'%;background:linear-gradient(90deg,'+c1+','+c2+')"></div></div></div>';
@@ -318,6 +320,9 @@ function getType(pcts){
 $('startBtn').addEventListener('click',function(e){e.preventDefault();startTest()});
 $('startBtn').addEventListener('touchend',function(e){e.preventDefault();startTest()});
 })();
+
+// QR Code: load from CDN
+(function(){var s=document.createElement('script');s.src='https://cdn.jsdelivr.net/npm/qrcode-generator@1.4.4/qrcode.min.js';s.onload=function(){window._makeQR=function(text,canvas,cellSize){cellSize=cellSize||3;try{var qr=qrcode(0,'M');qr.addData(text);qr.make();var cnt=qr.getModuleCount();var sz=(cnt+2)*cellSize;canvas.width=sz;canvas.height=sz;var ctx=canvas.getContext('2d');ctx.fillStyle='#fff';ctx.fillRect(0,0,sz,sz);ctx.fillStyle='#000';for(var r=0;r<cnt;r++)for(var c=0;c<cnt;c++)if(qr.isDark(r,c))ctx.fillRect((c+1)*cellSize,(r+1)*cellSize,cellSize,cellSize)}catch(e){}};};document.head.appendChild(s)})();
 </script>
 </body>
 </html>
